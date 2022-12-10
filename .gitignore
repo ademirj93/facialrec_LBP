@@ -1,0 +1,5 @@
+#Diretórios
+datasets/*
+
+#Arquivos
+*.yml
