@@ -9,15 +9,13 @@ from PIL import Image
 
 def getImagemComIdArface():
     
-    caminho = (glob.glob("./datasets/Arface_mtcnn_v2/face/*"))
+    caminho = (glob.glob("./ARFACE/*"))
 
     if os.path.exists("arfaceSet.txt"):
         os.remove("arfaceSet.txt")
-        file = open("arfaceSet.txt", "x")
-        file = open("arfaceSet.txt", "a")
-    else:
-        file = open("arfaceSet.txt", "x")
-        file = open("arfaceSet.txt", "a")
+
+    file = open("arfaceSet.txt", "x")
+    file = open("arfaceSet.txt", "a")
 
     faces = []
     ids = []
@@ -31,7 +29,7 @@ def getImagemComIdArface():
         
 
         if gender == str('Cw'):
-            id = int(id + 76)
+            id = int(id + 9)
 
         if int(day) <= 13:
             ids.append(id)
@@ -46,10 +44,9 @@ def getImagemComIdArface():
 
     return np.array(ids), faces
 
-
 def trainamentoArface(ids, faces):
 
-    lbph = cv2.face.LBPHFaceRecognizer_create(2, 2, 7, 7, 50)
+    lbph = cv2.face.LBPHFaceRecognizer_create(5, 5, 7, 7, 50)
 
     print('Treinamento dataset ARfaces iniciado....')
 
@@ -75,9 +72,9 @@ def detectorFacialArfaces ():
     percentualAcerto = 0.0
     totalConfianca = 0.0
 
-    caminhos = [os.path.join('datasets/Arface_mtcnn_v2/face', f) for f in os.listdir('datasets/Arface_mtcnn_v2/face')]
+    caminhos = [os.path.join('./ARFACE', f) for f in os.listdir('./ARFACE')]
 
-    print(len(caminhos))
+    
 
     for caminhoImagem in caminhos:
         day = int(os.path.split(caminhoImagem)[-1].split('-')[-1].split('_')[0])
@@ -113,7 +110,8 @@ def detectorFacialArfaces ():
                 confiancaGer.append(confianca)
 
                 #cv2.waitKey(500)
-    print(totalAcertos)
+    print(f'{len(caminhos)} de elementos no dataset')
+    print(f'O total de acertos foi igual á {totalAcertos}')
     percentualAcerto = (totalAcertos / contador) * 100
     totalConfianca = totalConfianca / totalAcertos
     print("Percentual de acerto: " + str(percentualAcerto))
@@ -123,39 +121,40 @@ def detectorFacialArfaces ():
 
 def getImagemComIdFrgc():
 
-    caminho = (glob.glob("./datasets/FRGC/FRGC-2.0-dist/nd1/Fall2002/**/*"))
+
+    #caminho = (glob.glob("./datasets/FRGC/*"))
+    caminho = open("trainfrgc.txt",encoding="utf8")
+    caminho = caminho.read().split('\n')
 
     if os.path.exists("frgcSet.txt"):
         os.remove("frgcSet.txt")
-        file = open("frgcSet.txt", "x")
-        file = open("frgcSet.txt", "a")
-    else:
-        file = open("frgcSet.txt", "x")
-        file = open("frgcSet.txt", "a")
+    
+    file = open("frgcSet.txt", "x")
+    file = open("frgcSet.txt", "a")
+    
     faces = []
     ids = []
 
-    randomtest = random.sample(caminho, 400)
+    #randomtest = random.sample(caminho, 400)
 
     for f in caminho:
-        if f not in randomtest:
-            imagemFace = cv2.cvtColor(cv2.imread(f), cv2.COLOR_BGR2GRAY)
-            id = int(os.path.split(f)[-1].split('d')[0])
-            ids.append(id)
-            faces.append(imagemFace)
+        #if f not in randomtest:
+        imagemFace = cv2.cvtColor(cv2.imread(f), cv2.COLOR_BGR2GRAY)
+        id = int(os.path.split(f)[-1].split('d')[0])
+        ids.append(id)
+        faces.append(imagemFace)
 
     list_set = set(ids)
     unique_list = (list(list_set))
     for x in unique_list:
         file.write(str(x) + '\n')
-
     file.close()
 
-    return np.array(ids), faces, randomtest
+    return np.array(ids), faces
 
 def trainamentoFrgc(ids,faces):
 
-    lbph = cv2.face.LBPHFaceRecognizer_create(4, 8, 8, 8, 200)
+    lbph = cv2.face.LBPHFaceRecognizer_create(2, 2, 7, 7, 1)
 
     print('Treinamento dataset FRGC iniciado....')
 
@@ -166,12 +165,12 @@ def trainamentoFrgc(ids,faces):
 
     return
 
-def detectorFacialFRGC(randomtest):
+def detectorFacialFRGC():
 
     detectorFace = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
     reconhecedor = cv2.face.LBPHFaceRecognizer_create()
     reconhecedor.read("classificadorFrgc.yml")
-
+    #randomtest = open("test")
     contador = 0
     
     confiancaGer = []
@@ -180,14 +179,13 @@ def detectorFacialFRGC(randomtest):
     percentualAcerto = 0.0
     totalConfianca = 0.0
 
-    caminhos = (glob.glob("./datasets/FRGC/FRGC-2.0-dist/nd1/Fall2002/**/*"))
-
-    print(len(caminhos))
+    caminhos = open("testfrgc.txt", encoding="utf8")
+    caminhos = caminhos.read().split('\n')
 
     for caminhoImagem in caminhos:
         #print(caminhos)
         #print(randomtest)
-        if caminhoImagem in randomtest:
+        #if caminhoImagem in randomtest:
             imagemFace = cv2.cvtColor(cv2.imread(caminhoImagem), cv2.COLOR_BGR2GRAY)
             imagemFaceNP = np.array(imagemFace, 'uint8')
 
@@ -212,7 +210,8 @@ def detectorFacialFRGC(randomtest):
                 confiancaGer.append(confianca)
 
                 #cv2.waitKey(500)
-    print(totalAcertos)
+    print(f'{len(caminhos)} de elementos no dataset')
+    print(f'O total de acertos foi igual á {totalAcertos}')
     percentualAcerto = (totalAcertos / contador) * 100
     totalConfianca = totalConfianca / totalAcertos
     print("Percentual de acerto: " + str(percentualAcerto))

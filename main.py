@@ -1,25 +1,17 @@
-import cv2
-import glob
-import os
 import numpy as np
-import random
 import basic_functions as bf
 import function_validation as fv
-import matplotlib.pyplot as plt
-#from sklearn import metrics
 
-lpbh = cv2.face.LBPHFaceRecognizer_create()
-
-#./darknet.exe detector train .\face.data .\face.cfg yolov4.conv.137
-
-idsFrgc, facesFrgc, grupoteste = bf.getImagemComIdFrgc()
-idsArface, facesArfaces = bf.getImagemComIdArface()
-
+print('\nDataset FRGC')
+idsFrgc, facesFrgc = bf.getImagemComIdFrgc()
 bf.trainamentoFrgc(idsFrgc, facesFrgc)
-bf.trainamentoArface(idsArface, facesArfaces, )
+frgc = bf.detectorFacialFRGC()
 
-frgc = bf.detectorFacialFRGC(grupoteste)
+print('\nDataSet ARFACES')
+idsArface, facesArfaces = bf.getImagemComIdArface()
+bf.trainamentoArface(idsArface, facesArfaces)
 arface = bf.detectorFacialArfaces()
+print('\n')
 
 # Y_test é o vetor dos valores com os quais você quer testar a previsão
 # Y_probas é obtido com Y_probas = dt.predict_proba( X_test )
