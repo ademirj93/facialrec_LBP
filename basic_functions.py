@@ -46,7 +46,7 @@ def getImagemComIdArface():
 
 def trainamentoArface(ids, faces):
 
-    lbph = cv2.face.LBPHFaceRecognizer_create(5, 5, 7, 7, 50)
+    lbph = cv2.face.LBPHFaceRecognizer_create(1, 4, 6, 6, 50)
 
     print('Treinamento dataset ARfaces iniciado....')
 
@@ -71,6 +71,7 @@ def detectorFacialArfaces ():
     totalAcertos = 0
     percentualAcerto = 0.0
     totalConfianca = 0.0
+    totalFaces = 0
 
     caminhos = [os.path.join('./ARFACE', f) for f in os.listdir('./ARFACE')]
 
@@ -81,13 +82,13 @@ def detectorFacialArfaces ():
 
         if day >= 14:
 
-            contador += 1
-
             imagemFace = Image.open(caminhoImagem).convert('L')
             imagemFaceNP = np.array(imagemFace, 'uint8')
 
             facesDetectadas = detectorFace.detectMultiScale(imagemFaceNP)
             for (x, y, l, a) in facesDetectadas:
+
+                contador += 1
 
                 idPrevisto, confianca = reconhecedor.predict(imagemFaceNP)
 
@@ -96,7 +97,6 @@ def detectorFacialArfaces ():
 
                 if gender == str('Cw'):
                     idAtual = int(idAtual + 76)
-
 
                 #cv2.rectangle(imagemFaceNP, (x, y), (x + l, y + a), (0, 255, 255), 2)
                 #cv2.imshow("Face", imagemFaceNP)
@@ -108,9 +108,10 @@ def detectorFacialArfaces ():
                 #print(str(idAtual) + " foi classificado como " + str(idPrevisto) + " - " + str(confianca))
 
                 confiancaGer.append(confianca)
+                totalFaces = totalFaces + len(facesDetectadas)
 
                 #cv2.waitKey(500)
-    print(f'{len(caminhos)} de elementos no dataset')
+    print(f'{totalFaces} de elementos no dataset')
     print(f'O total de acertos foi igual á {totalAcertos}')
     percentualAcerto = (totalAcertos / contador) * 100
     totalConfianca = totalConfianca / totalAcertos
@@ -154,7 +155,7 @@ def getImagemComIdFrgc():
 
 def trainamentoFrgc(ids,faces):
 
-    lbph = cv2.face.LBPHFaceRecognizer_create(2, 2, 7, 7, 1)
+    lbph = cv2.face.LBPHFaceRecognizer_create(2, 8, 7, 7, 50)
 
     print('Treinamento dataset FRGC iniciado....')
 
@@ -178,6 +179,7 @@ def detectorFacialFRGC():
     totalAcertos = 0
     percentualAcerto = 0.0
     totalConfianca = 0.0
+    totalFaces = 0
 
     caminhos = open("testfrgc.txt", encoding="utf8")
     caminhos = caminhos.read().split('\n')
@@ -189,10 +191,10 @@ def detectorFacialFRGC():
             imagemFace = cv2.cvtColor(cv2.imread(caminhoImagem), cv2.COLOR_BGR2GRAY)
             imagemFaceNP = np.array(imagemFace, 'uint8')
 
-            contador += 1
-
             facesDetectadas = detectorFace.detectMultiScale(imagemFaceNP)
             for (x, y, l, a) in facesDetectadas:
+
+                contador += 1
 
                 idPrevisto, confianca = reconhecedor.predict(imagemFaceNP)
 
@@ -208,9 +210,12 @@ def detectorFacialFRGC():
                 #print(str(idAtual) + " foi classificado como " + str(idPrevisto) + " - " + str(confianca))
 
                 confiancaGer.append(confianca)
+                totalFaces = totalFaces + len(facesDetectadas)
 
                 #cv2.waitKey(500)
-    print(f'{len(caminhos)} de elementos no dataset')
+    print(totalAcertos)
+    print(contador)
+    print(f'{contador} de faces no dataset')
     print(f'O total de acertos foi igual á {totalAcertos}')
     percentualAcerto = (totalAcertos / contador) * 100
     totalConfianca = totalConfianca / totalAcertos

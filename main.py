@@ -3,13 +3,13 @@ import basic_functions as bf
 import function_validation as fv
 
 print('\nDataset FRGC')
-idsFrgc, facesFrgc = bf.getImagemComIdFrgc()
-bf.trainamentoFrgc(idsFrgc, facesFrgc)
+#idsFrgc, facesFrgc = bf.getImagemComIdFrgc()
+#bf.trainamentoFrgc(idsFrgc, facesFrgc)
 frgc = bf.detectorFacialFRGC()
 
 print('\nDataSet ARFACES')
-idsArface, facesArfaces = bf.getImagemComIdArface()
-bf.trainamentoArface(idsArface, facesArfaces)
+#idsArface, facesArfaces = bf.getImagemComIdArface()
+#bf.trainamentoArface(idsArface, facesArfaces)
 arface = bf.detectorFacialArfaces()
 print('\n')
 
